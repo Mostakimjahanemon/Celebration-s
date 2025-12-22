@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Nica</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    overflow: hidden;
+}
+
+/* PASSWORD */
+#lock {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#lock input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+#lock button {
+    padding: 10px 25px;
+    background: #4da6ff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+#error { color: #4da6ff; display: none; }
+
+/* MAIN */
+#main {
+    display: none;
+    text-align: center;
+    padding-top: 40px;
+}
+
+#welcome {
+    font-size: 2.3em;
+    color: #4da6ff;
+    text-shadow: 0 0 15px #4da6ff;
+}
+
+#welcome-msg {
+    margin: 20px auto 40px;
+    max-width: 600px;
+    color: #dceeff;
+}
+
+/* SECTION BUTTONS */
+#sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 230px;
+    margin: auto;
+}
+
+.box {
+    background: blue;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #4da6ff;
+}
+
+/* SECTION SCREEN */
+.section-screen {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: none;
+    flex-direction: column;
+    padding: 30px;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+.section-screen.active { display: flex; }
+
+.close-btn {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    background: #4da6ff;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+
+/* RHYME BOX */
+.rhyme-box {
+    background: linear-gradient(135deg,#4da6ff,#1f6fd6);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px #4da6ff;
+    max-width: 750px;
+    margin: 40px auto 30px;
+}
+
+/* TIMELINE */
+.timeline {
+    max-width: 750px;
+    margin: auto;
+    border-left: 3px solid #4da6ff;
+    padding-left: 20px;
+}
+
+.timeline-item {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.timeline-item h3 {
+    color: #4da6ff;
+    margin-bottom: 6px;
+}
+
+/* LONG MESSAGE BOX */
+.long-message {
+    background: rgba(77,166,255,0.12);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0 15px;
+    line-height: 1.6;
+    max-height: 80px;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    cursor: pointer;
+}
+.long-message.expanded { max-height: 2000px; }
+
+/* HEART BURST */
+.heart {
+    position: absolute;
+    font-size: 14px;
+    animation: burst 2s ease-out forwards;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+@keyframes burst {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(0.4); opacity: 0; }
+}
+
+/* JOKES SCREEN */
+#jokes-container {
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.joke {
+    background: rgba(77,166,255,0.12);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    color: white;
+    line-height: 1.5;
+}
+
+/* PROMISES SCREEN */
+.promise-box {
+    background: linear-gradient(135deg,#4da6ff,#1f6fd6);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 750px;
+    box-shadow: 0 0 25px #4da6ff;
+}
+
+/* BIRTHDAY */
+.birthday-box {
+  background: linear-gradient(135deg,#4da6ff,#1f6fd6);
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  color: white;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow: hidden;
+  box-shadow: 0 0 25px #4da6ff;
+  cursor: default;
+}
+
+/* Letter box */
+.letter-box {
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.letter-content {
+  max-height: 0;
+  overflow-y: auto;
+  transition: max-height 0.6s ease, padding 0.4s ease;
+  padding-top: 0;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.letter-box.open .letter-content {
+  max-height: 800px;
+  padding: 15px;
+}
+
+/* Heart burst for letter */
+.letter-heart {
+  position: absolute;
+  font-size: 14px;
+  pointer-events: none;
+  animation: letterBurst 1.5s ease-out forwards;
+}
+
+@keyframes letterBurst {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--x), var(--y)) scale(0.4); opacity: 0; }
+}
+
+/* Continuous floating hearts */
+.floating-heart {
+  position: absolute;
+  font-size: 12px;
+  pointer-events: none;
+  animation: floatHeart linear infinite;
+  opacity: 0.9;
+}
+@keyframes floatHeart {
+  0% { transform: translateY(0) scale(1); opacity:0.8;}
+  100% { transform: translateY(-500px) scale(1.3); opacity:0.9;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="lock">
+    <h2>Enter the secret 💙</h2>
+    <input type="password" id="pass">
+    <button onclick="unlock()">Unlock</button>
+    <div id="error">Try again</div>
+</div>
+
+<div id="main">
+    <div id="welcome">Welcome Nica, to our little webpage 💙</div>
+    <div id="welcome-msg">
+        From the first laugh to every secret shared,<br>
+        Two hearts in friendship, deeply cared.<br>
+        Miles may part us, yet we remain near,<br>
+        In every thought, your smile I hold dear 💙
+    </div>
+
+    <div id="sections">
+        <div class="box" onclick="openSection('friendship')">Our Friendship</div>
+        <div class="box" onclick="openSection('birthday')">Your Birthday</div>
+        <div class="box" onclick="openSection('jokes')">Jokes</div>
+        <div class="box" onclick="openSection('promises')">Promises</div>
+    </div>
+</div>
+
+<!-- FRIENDSHIP -->
+<div id="friendship" class="section-screen">
+<button class="close-btn" onclick="closeSection('friendship')">Close</button>
+
+<h1 style="text-align:center;color:#4da6ff;">Emonica</h1>
+
+<div class="rhyme-box">
+From a simple “hi” across the screen,<br>
+A bond was born, so pure, so unseen.<br>
+Miles apart, yet hearts stayed near,<br>
+Through silent days, you were still here.<br>
+Not daily words, yet trust remained,<br>
+Through joy and hurt, through loss and pain.<br>
+Time may pause, the world may bend,<br>
+But friendship waits, it doesn’t end.<br>
+Not loud, not rushed, not meant to fade,<br>
+Just quiet care that always stayed.<br>
+Whatever comes, whatever’s done,<br>
+Two souls, one bond—forever one. 💙
+</div>
+
+<div class="timeline">
+
+  <!-- Timeline items -->
+  <div class="timeline-item">
+    <h3>June 14, 2023</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      First message to you on Messenger – a day that changed everything. 💌
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <h3>July 2023</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      Nica, you told me that you liked me as your friend..!. 🌸
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <h3>November 7, 2023</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      I confessed my love to you,Nica. 💖
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <h3>January 1, 2025</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      You may not like my words.   Still read my boring words.   Trust me nica, I never ignored you.   You might have thought that I ignored you for my long absence.   Seeing the current generation and surroundings, my mother asked me to stop using the phone for a few days.   This is why I could not talk to you in May and November.   My mother used to do this before exams.    You misunderstood me.    Again, I did not ignore you, and I will never.  I don't know exactly whether my absence has hurt you or not.    I'm very sorry if this hurts you.    I will never intentionally ignore you.    Maybe the less you feel for me the better.   But I'm always there for you.    If I can't message you for a long time, don't think I'm ignoring you.    Maybe I won't be able to use the phone from tomorrow.    Don't forget me nica.    I will always remember you.    I will be back soon.    I say these things so that you do not suffer.    I'll be happy if you don't suffer.   Today you told me that when you talk to me, you will teach me Filipino.    I would also be very happy to learn this from you.    Thanks for your effort and desire.    Maybe it would have been better if you started it earlier.   I was free for the whole of December, but you didn't talk to me because of the misunderstanding.    Belief is the key to all types of relationships. I hope you believe me and do.    Don't be upset for me, the reason for saying it is There is 30% chance (not 100%) that you will be upset for me.    Anyway, I have said all the bad things so far, maybe I shouldn't have said them on your birthday today.    I still said because maybe I won't be able to come online tomorrow.   I always praying for you, you are one of my favorite persons.    My family, teachers expect something  good from me, so pray for me.    You also move on in life.    Celebrate your life, especially today.    Today is a special day in two ways.    It's your birthday, and today is the first day of the new year.    Try to be happy.  What else can I say, I can't give much advice haha.    At last, promise me that you won't feel sad/upset for me.    If you tell me, I will be very happy indeed."
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <h3>June 14, 2025 – Revisited</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      'HAPPY 2nd ANNIVERSARY, Nica.
+Two years have passed. Our friendship is strong now, and we both want it to be even stronger in the future. These two years brought a lot—good, bad, happy, sad memories. But now, everything is okay. From beginning to now, A to Z — all of it is okay.
+
+I mentioned our 7th anniversary before, saying I want to see us still together then. I believe that if two people can stay friends for 7 years, no one can break that bond easily. There will be no doubt about our friendship. Only 5 years left — we got this. All we need is trust and understanding.
+
+It doesn’t matter how long we don’t talk — I always remember you and love you from my place.
+Our happiness depends on our mindset and thoughts, so we should always think positively. Never compare our friendship with others’. I’m unique too. Maybe I can't give you what you expect — but if you don’t tell me what that is, I might never know. And that can affect our friendship in a bad way — and neither of us wants that.
+
+Never make a decision based on what others say. Don’t listen to third parties — talk to me. We can fix anything. Only my sister, my friend Rexa, and my C. Master know about you. I never talk about you publicly because I don’t want to give anyone the chance to say something bad about you. I love you very much, and I can’t accept anything negative about you.
+
+Two days ago, you had some negative thoughts — like what if I leave you (which is impossible) without any reason. I know it would hurt you — but remember, I loved you first. My feelings are deep. If something like that ever happened, it would hurt me even more. That’s why I won’t do it.
+
+You’ve never seen me, never even talked to me — so I know trusting me isn’t easy. But you still trusted me, and I don’t even have words for how grateful I am.
+
+Finally, I just want one thing from you now — to see you strong.
+
+> You’re stronger than you think, Nica. Even when life feels heavy, I know there’s a warrior inside you who never gives up.
+Every challenge you face is just another proof that you’re built to rise, not break.
+I may not be there physically, but my support, prayers, and love are always around you. You’re never alone in this fight.
+You don’t need to be perfect — just real, just brave, just you. That’s already more than enough.
+It’s okay to fall, but promise me you’ll always stand back up. Your comeback will always be stronger than the setback.
+Whatever storms you face, I believe in your ability to survive and shine through them. Your strength is your superpower.
+The world may not always be kind, but I want you to never doubt your worth. You’re valuable, powerful, and deserving of every good thing.
+And when you're feeling weak, I hope you remember these words: You are not fragile. You are fire. 🔥
+
+
+
+And remember…
+
+> No matter where you are or what you're going through, just know I’m always here for you — silently cheering, praying, and believing in you.
+Even when life feels unfair or lonely, remember you have someone who truly cares for you — me.
+If you ever feel lost, confused, or tired — don’t hesitate to lean on me. I may not have all the answers, but I’ll always be your safe space.
+You don’t have to face everything alone. I may be far, but I promise my heart is always near.
+Your pain is not a burden to me. Your silence is not invisible to me. I see you, I feel you, and I’m with you — always.
+In your weakest moments, I’ll remind you of your strength. In your darkest hours, I’ll be your light.
+I may not be perfect, but I’ll always try to be the person who never lets you face the storm alone.
+If the world turns its back on you, I won’t. I’ll stand with you — even if it’s just in words, even if it’s just in spirit.
+You’ve always got me in your corner. Quietly, endlessly, loyally supporting you.' 🌟
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <h3>Friendship Day</h3>
+    <div class="long-message" onclick="toggleMessageWithBurst(this)">
+      'To You, Who Stayed
+(It's been 2 years of friendship.)
+
+I never thought someone like you would come into my life—
+someone who understands even the words I don’t say,
+someone who can make me laugh even when I’m silently breaking.
+
+Thank you.
+For all the small things you’ve done that meant everything to me.
+For the “Have you eaten?” and “You got this,”
+that may sound simple—but they made me feel truly cared for.
+
+Two years now, right?
+We’ve shared so much—
+secrets, stories, and promises we never had to say out loud…
+because we already knew.
+
+I hope no matter what happens,
+you’ll still be around in the years to come.
+Even if we don’t talk every day,
+may we never forget that we have something real:
+a friendship that never asked for anything in return,
+but gave everything anyway.
+
+🤍 Happy Friendship Day.
+Thank you for the two years—and hopefully, for more to come. – Your bestfriend BON'
+    </div>
+  </div>
+
+  <p style="text-align:center; color:#4da6ff; margin-top:30px; font-size:18px;">
+    I am working on this Nica. I will add more...! 💖
+  </p>
+
+</div>
+</div>
+
+<!-- JOKES -->
+<div id="jokes" class="section-screen">
+  <button class="close-btn" onclick="closeSection('jokes')">Close</button>
+
+  <h1 style="text-align:center;color:#4da6ff;">Jokes & Fun 😄💙</h1>
+
+  <div class="rhyme-box" style="max-width:800px; cursor:pointer;" onclick="burstHearts(this)">
+    <!-- Paste all your jokes here inside this box -->
+    <p id="jokes-text" style="text-align:left; line-height:1.6; color:white;">
+      <!-- Example: -->
+      1. Why did the best friends bring a ladder? To reach the top of happiness together!<br>
+2. Why did the friend bring a pencil to the party? To draw some fun!<br>
+3. Friends don’t let friends eat alone… unless it’s pizza, then maybe. 🍕<br>
+4. Why did the friends sit on the clock? To spend time together!<br>
+5. What did one friend say to the other on Monday? “Hang in there, it’s only 5 more days to the weekend!”<br>
+6. Why did the friendship go to school? To improve its “bonding” skills.<br>
+7. How do friends talk in the forest? “Tree-mendously!” 🌳<br>
+8. Why did the two friends go to the bakery? To make sweet memories. 🍰<br>
+9. How do friends stay cool? By staying in each other’s “shade.”<br>
+10. Why was the friend always calm? Because they had a lot of “patience.”<br>
+11. Why did the two friends bring a map? To never lose their way to fun!<br>
+12. What do you call a friend who’s always helping? “Grate-full!” 🧀<br>
+13. Why did the friends become astronauts? To have space for their friendship. 🚀<br>
+14. Why did the friends exchange shoes? To walk in each other’s footsteps. 👟<br>
+15. How did the friends fix a broken friendship? With “band-aids” of laughter.<br>
+16. Why did the friend bring a notebook? To write all the inside jokes.<br>
+17. How do friends always know the truth? Because they share the same Wi-Fi! 📶<br>
+18. Why did the friends take a nap together? To have dream teamwork! 😴<br>
+19. What’s a friend’s favorite exercise? Jumping into each other’s arms! 🤗<br>
+20. Why did the friends bring a compass? To stay on the right path together.<br>
+21. Why was the friendship library popular? Everyone wanted a chapter! 📖<br>
+22. Why did the friends eat spaghetti together? To have a “pasta” fun! 🍝<br>
+23. Why did the friend bring glue? To stick together forever.<br>
+24. What did one friend say to the other at the beach? “Sea you later!” 🌊<br>
+25. Why did the friends become comedians? To share laughter non-stop! 😂<br>
+26. How do friends measure happiness? In hugs per day! 🤗<br>
+27. Why did the friend bring a flashlight? To brighten the darkest days. 🔦<br>
+28. What’s a friend’s favorite dessert? Sweet memories. 🍨<br>
+29. Why did the friends bring balloons? To lift their spirits! 🎈<br>
+30. How do friends send secret messages? With emoji codes! 😉<br>
+31. Why did the friendship cross the road? To be together on the other side. 🐔<br>
+32. Why did the friends become detectives? To find lost smiles. 🕵️<br>
+33. How do friends solve problems? By splitting them in half.<br>
+34. Why did the friend bring music? To dance through life together! 🎵<br>
+35. Why did the friends plant a tree? To grow roots like their friendship. 🌳<br>
+36. What did one friend say to the other at school? “You complete my class!”<br>
+37. Why was the friendship always online? Because connection matters! 💻<br>
+38. Why did the friends play cards? To deal with life together. 🃏<br>
+39. How do friends keep secrets? With locked hearts. 🔒<br>
+40. Why did the friendship bring umbrellas? To weather storms together. ☔<br>
+41. Why did the friends start a band? To harmonize their laughs. 🎸<br>
+42. Why did the friendship join a gym? To lift each other’s spirits. 💪<br>
+43. Why was the friendship a movie? Because it had a happy ending every time! 🎬<br>
+44. How do friends share homework? Carefully and with jokes! 📚<br>
+45. Why did the friends bake cookies? To have sweet talks. 🍪<br>
+46. What do friends do on a rainy day? Splash into fun! 🌧️<br>
+47. Why did the friends go stargazing? To find their bright moments. 🌟<br>
+48. How do friends send hugs? Through emojis! 🤗💌<br>
+49. Why did the friends go to the park? To swing into laughter. 🎠<br>
+50. Why did the friends bring coffee? To stay awake for fun! ☕<br>
+51. How do friends celebrate small victories? With huge smiles! 😁<br>
+52. Why did the friends tell secrets in whispers? To keep them magical. ✨<br>
+53. Why did the friends draw doodles together? To sketch happiness. 🖊️<br>
+54. How do friends share snacks? By splitting and laughing. 🍿<br>
+55. Why was the friendship always strong? Because it had no weak links.<br>
+56. How did the friends finish a puzzle? Together, piece by piece. 🧩<br>
+57. Why did the friendship go to the zoo? To roar with laughter! 🦁<br>
+58. Why do friends love surprises? Because happiness doubles when shared. 🎁<br>
+59. How did the friends beat boredom? With unlimited jokes! 😄<br>
+60. Why did the friends plant flowers? To bloom together forever. 🌸<br>
+61. Why did the heart go to school? To learn how to “beat” correctly. 💓<br>
+62. Why did the couple bring a ladder? To reach higher love!<br>
+63. How do you make a relationship strong? By adding hugs and laughs daily. 🤗<br>
+64. Why did the boy give a pencil to the girl? To draw her heart. ✏️❤️<br>
+65. What did one heart say to another? “You make me skip a beat!” 💓<br>
+66. Why did the couple go to the bakery? To share a sweet slice of love. 🍰<br>
+67. How do lovers communicate online? With emojis and heart signals. 💌<br>
+68. Why did the heart get a medal? For loving without limits. 🏅<br>
+69. Why do couples love the stars? Because their love is endless. 🌌<br>
+70. How do you make someone smile? Just say “I care.” 😊<br>
+71. Why did the couple bring umbrellas? To protect their love from storms. ☔<br>
+72. Why did the heart go jogging? To run toward happiness. 🏃‍♂️❤️<br>
+73. How do lovers play hide-and-seek? By hiding in each other’s hearts. 💞<br>
+74. Why did the girl give her love a notebook? To write their story. 📖<br>
+75. What did the boy say when he saw the moon? “You’re my moonlight.” 🌙<br>
+76. Why did the heart bring music? To make love songs louder. 🎵<br>
+77. How do you know love is real? When you care even without words. 💖<br>
+78. Why did the couple take the stairs? To step up their relationship!<br>
+79. How do lovers stay strong? By holding hands through storms. 🤝<br>
+80. Why did the couple bring ice cream? Because love is sweeter together. 🍦<br>
+81. What do you call love that makes you laugh? “Hug-larious!” 🤣<br>
+82. Why did the heart go to the library? To read love stories. 📚<br>
+83. How do couples plan adventures? By dreaming together. 🌈<br>
+84. Why did the couple paint together? To color their world happy. 🎨<br>
+85. What’s a happy couple’s secret? Jokes, hugs, and trust.<br>
+86. How do lovers stay awake? By thinking about each other. ☕💓<br>
+87. Why did the couple play board games? To pass the “love” time. 🎲<br>
+88. How do you make your crush laugh? Be your silly self. 😜<br>
+89. Why did the heart join a choir? To sing love everywhere! 🎤<br>
+90. What did one rose say to the other? “You make life bloom.” 🌹<br>
+91. Why did the boy bring a clock? To show he loves every second with her. ⏰<br>
+92. How do couples survive Monday mornings? With coffee and kisses. ☕💋<br>
+93. Why did the love note get a stamp? To travel hearts worldwide. 💌<br>
+94. How do lovers celebrate small wins? With sweet smiles. 😄<br>
+95. Why did the couple visit a museum? To admire art and each other. 🖼️<br>
+96. What’s a lover’s favorite dessert? Sweet heart-shaped cookies. 🍪<br>
+97. Why did the heart bring a flashlight? To shine on dark days. 🔦<br>
+98. How do lovers survive rain? By sharing an umbrella and warmth. ☔💞<br>
+99. Why did the couple play cards? To deal with life together. 🃏<br>
+100. What did one heart say on Valentine’s Day? “I’m stuck on you!”<br>
+101. How do lovers dance? With two hearts moving as one. 💃🕺<br>
+102. Why did the couple bring popcorn? For a fun movie date. 🍿<br>
+103. How do you describe love in one word? “Magic.” ✨<br>
+104. Why did the boy carry a backpack? To hold all his love letters. 🎒💌<br>
+105. How do couples handle exams? By helping each other study. 📖<br>
+106. Why did the heart go to the gym? To build strong feelings. 💪❤️<br>
+107. How do lovers measure time? By smiles per day. 😄<br>
+108. Why did the couple write jokes? To laugh their way into each other’s hearts. 🤣<br>
+109. What did one heart say when scared? “I’m safe with you.” 💓<br>
+110. Why did the couple share an umbrella? To keep love dry. ☔💖<br>
+111. How do lovers travel? On the wings of trust. 🕊️<br>
+112. Why did the boy give a star? To show his love is limitless. 🌟<br>
+113. What did the heart say at the bakery? “I dough-nut want to be apart!” 🍩<br>
+114. Why did the couple bring blankets? To share warmth and smiles. 🛏️💙<br>
+115. How do lovers celebrate success? With hugs, high-fives, and smiles.<br>
+116. Why did the heart bring a hat? To protect feelings from the sun. 🧢❤️<br>
+117. What did the girl say about the boy’s jokes? “They’re heartwarming!” 😄<br>
+118. How do couples survive Monday exams? With snacks and support. 🍪📚<br>
+119. Why did the heart take a selfie? To capture love forever. 📸💞<br>
+120. How do lovers stay close? By talking, laughing, and caring daily. 💌<br>
+121. Why did the friends go on a picnic? To spread happiness on a blanket. 🧺<br>
+122. How do friends plan surprises? With secret smiles and whispers. 🤫<br>
+123. Why did the friends visit the beach? To let worries drift away. 🌊<br>
+124. How do friends show support? By holding hands silently. 🤝<br>
+125. Why did the friends make a scrapbook? To collect joy forever. 📔<br>
+126. How do friends share dreams? By listening without judgment. 🌟<br>
+127. Why did the friendship plant seeds? To grow memories together. 🌱<br>
+128. How do friends cheer each other up? With silly dances and laughter. 💃😂<br>
+129. Why did the friends bake a cake? To sweeten their day. 🎂<br>
+130. How do friends stay connected? Through little messages of care. 💌<br>
+131. Why did the friends write notes? To say what words couldn’t. ✏️<br>
+132. How do friends handle fights? With patience and hugs. 🤗<br>
+133. Why did the friends start a garden? To nurture life together. 🌸<br>
+134. How do friends celebrate victories? By jumping and laughing. 😆<br>
+135. Why did the friends watch stars? To dream side by side. 🌌<br>
+136. How do friends comfort each other? With quiet presence. 🕊️<br>
+137. Why did the friends share a hoodie? To keep warm together. 🧥<br>
+138. How do friends surprise each other? With tiny thoughtful gifts. 🎁<br>
+139. Why did the friends write a story? To capture adventures forever. 📖<br>
+140. How do friends solve mysteries? By teamwork and clues. 🕵️‍♂️<br>
+141. Why did the friends learn a dance? To move in sync with joy. 💃🕺<br>
+142. How do friends remember fun days? With photos and doodles. 📸🖊️<br>
+143. Why did the friends build a fort? To have a secret hideout. 🏰<br>
+144. How do friends keep memories alive? By telling stories again and again. 🔄<br>
+145. Why did the friends make friendship bracelets? To wear their bond. 💎<br>
+146. How do friends stay motivated? By cheering each other on. 📣<br>
+147. Why did the friends write letters? To share thoughts safely. 💌<br>
+148. How do friends celebrate small joys? With claps, smiles, and giggles. 😁<br>
+149. Why did the friends organize a game night? To play happiness together. 🎲<br>
+150. How do friends handle sadness? By listening and understanding. ❤️<br>
+151. Why did the friends go cycling? To ride through laughter. 🚴‍♂️<br>
+152. How do friends create traditions? By repeating special moments. 🔔<br>
+153. Why did the friends make a playlist? To hear memories in songs. 🎶<br>
+154. How do friends share secrets? With a wink and a nod. 😉<br>
+155. Why did the friends take selfies? To remember smiles forever. 📸<br>
+156. How do friends support dreams? By reminding each other of goals. 🌈<br>
+157. Why did the friends bake cookies? To taste joy together. 🍪<br>
+158. How do friends calm worries? By being present. 🕊️<br>
+159. Why did the friends write poems? To express what words alone cannot. ✍️<br>
+160. How do friends celebrate differences? By laughing together. 😂<br>
+161. Why did the friends create a map? To mark adventures together. 🗺️<br>
+162. How do friends comfort tears? By hugs and kind words. 🤗<br>
+163. Why did the friends dance in the rain? To feel free together. 🌧️💃<br>
+164. How do friends honor mistakes? By forgiving and learning. 🌟<br>
+165. Why did the friends share books? To explore worlds together. 📚<br>
+166. How do friends make mornings better? With cheerful greetings. 🌞<br>
+167. Why did the friends exchange notes? To brighten dull days. 💌<br>
+168. How do friends celebrate milestones? With cake and laughter. 🎂<br>
+169. Why did the friends play sports? To grow stronger together. ⚽<br>
+170. How do friends support creativity? By encouraging ideas. 🎨<br>
+171. Why did the friends organize a camp? To share starlit stories. 🌌🏕️<br>
+172. How do friends handle jealousy? With honesty and trust. ❤️<br>
+173. Why did the friends go hiking? To reach peaks together. 🏔️<br>
+174. How do friends forgive easily? By remembering love matters more. 💖<br>
+175. Why did the friends write jokes? To laugh endlessly. 😂<br>
+176. How do friends share wisdom? By telling life lessons. 📖<br>
+177. Why did the friends plant flowers? To see colors bloom. 🌺<br>
+178. How do friends inspire each other? By example and encouragement. 🌟<br>
+179. Why did the friends decorate a room? To create joy around. 🎈<br>
+180. How do friends celebrate achievements? With cheers and hugs. 🥳🤗<br>
+181. Why did the friends make crafts? To build memories with hands. ✂️<br>
+182. How do friends stay silly? By telling goofy stories. 😜<br>
+183. Why did the friends host a movie night? To laugh and cry together. 🎬<br>
+184. How do friends stay patient? By caring even in silence. 🕊️<br>
+185. Why did the friends write a diary? To capture their journey together. 📖<br>
+186. How do friends stay hopeful? By reminding each other dreams exist. 🌈<br>
+187. Why did the friends send letters? To surprise unexpectedly. 💌<br>
+188. How do friends comfort nights? By messages of love. 🌙<br>
+189. Why did the friends create a scrapbook? To keep memories safe. 📔<br>
+190. How do friends celebrate birthdays? With smiles and care. 🎂💙<br>
+191. Why did the friends learn a song? To sing together joyfully. 🎶<br>
+192. How do friends handle mistakes? With forgiveness and hugs. 🤗<br>
+193. Why did the friends share a blanket? To stay cozy together. 🛏️<br>
+194. How do friends solve puzzles? By working as a team. 🧩<br>
+195. Why did the friends take photos? To capture moments forever. 📸<br>
+196. How do friends celebrate weekends? By adventures together. 🌞<br>
+197. Why did the friends play music? To create harmony together. 🎸<br>
+198. How do friends share emotions? Through smiles and notes. 💌<br>
+199. Why did the friends roast marshmallows? To taste happiness. 🔥<br>
+200. How do friends stay close? By talking and laughing daily. 💬<br>
+201. Why did the friends go stargazing? To find dreams in the sky. 🌟<br>
+202. How do friends support creativity? By cheering each idea. 🎨<br>
+203. Why did the friends play hide-and-seek? To giggle together secretly. 🤫<br>
+204. How do friends share happiness? By multiplying smiles. 😄<br>
+205. Why did the friends make a fort? To have a secret place for fun. 🏰<br>
+206. How do friends celebrate small wins? With claps and cheers. 👏<br>
+207. Why did the friends make friendship bracelets? To wear memories. 💎<br>
+208. How do friends handle disagreements? With honesty and care. ❤️<br>
+209. Why did the friends go cycling? To enjoy the breeze together. 🚴‍♂️<br>
+210. How do friends keep promises? By always remembering them. 🕊️<br>
+211. Why did the friends bake a cake? To sweeten their day together. 🎂<br>
+212. How do friends share jokes? By laughing endlessly. 😂<br>
+213. Why did the friends draw doodles? To capture silly moments. ✏️<br>
+214. How do friends comfort each other? With hugs and words. 🤗<br>
+215. Why did the friends create a photo album? To treasure memories. 📸<br>
+216. How do friends show love? Through small thoughtful actions. 💌<br>
+217. Why did the friends organize a picnic? To enjoy nature and each other. 🌳<br>
+218. How do friends celebrate festivals? By making it special together. 🎉<br>
+219. Why did the friends write letters? To surprise each other. 💌<br>
+220. How do friends stay motivated? By cheering each other on. 📣<br>
+221. Why did the friends dance in the rain? To feel free together. 🌧️💃<br>
+222. How do friends handle jealousy? By trust and care. 💖<br>
+223. Why did the friends share a hoodie? To stay warm and close. 🧥<br>
+224. How do friends support dreams? By believing in them. 🌈<br>
+225. Why did the friends plant a tree? To grow memories together. 🌱<br>
+226. How do friends celebrate achievements? With hugs and laughter. 🥳<br>
+227. Why did the friends host a game night? To create fun memories. 🎲<br>
+228. How do friends cheer up a sad day? By sending surprises. 🎁<br>
+229. Why did the friends watch movies together? To feel emotions together. 🎬<br>
+230. How do friends stay silly? By telling goofy stories. 😜<br>
+231. Why did the friends bake cookies? To share sweetness. 🍪<br>
+232. How do friends remember fun days? With photos and notes. 📸💌<br>
+233. Why did the friends write poems? To express what words can’t. ✍️<br>
+234. How do friends support each other? By being present. 🕊️<br>
+235. Why did the friends celebrate small joys? With giggles and cheers. 😄<br>
+236. How do friends stay connected? By sharing messages. 💌<br>
+237. Why did the friends create a scrapbook? To hold memories safe. 📔<br>
+238. How do friends inspire each other? By example and kindness. 🌟<br>
+239. Why did the friends play sports? To grow stronger together. ⚽<br>
+240. How do friends comfort nights? With loving messages. 🌙<br>
+241. Why did the friends write a diary? To capture moments forever. 📖<br>
+242. How do friends celebrate weekends? With small adventures. 🌞<br>
+243. Why did the friends roast marshmallows? To feel warmth and joy. 🔥<br>
+244. How do friends show patience? By staying kind in silence. 🕊️<br>
+245. Why did the friends make a playlist? To hear happiness in songs. 🎶<br>
+246. How do friends share secrets? With winks and smiles. 😉<br>
+247. Why did the friends take selfies? To capture joy forever. 📸<br>
+248. How do friends support challenges? By cheering silently. 🌟<br>
+249. Why did the friends go hiking? To reach peaks together. 🏔️<br>
+250. How do friends solve puzzles? By teamwork and laughs. 🧩<br>
+251. Why did the friends decorate rooms? To create joy around. 🎈<br>
+252. How do friends celebrate differences? By laughing together. 😂<br>
+253. Why did the friends play music? To harmonize happiness. 🎸<br>
+254. How do friends share emotions? Through small acts of care. 💌<br>
+255. Why did the friends watch stars? To dream side by side. 🌌<br>
+256. How do friends comfort tears? By hugs and kind words. 🤗<br>
+257. Why did the friends make crafts? To build memories together. ✂️<br>
+258. How do friends celebrate achievements? With joy and laughter. 🥳<br>
+259. Why did the friends learn a dance? To move in sync with fun. 💃🕺<br>
+260. How do friends honor mistakes? With forgiveness and care. 🌟<br>
+261. Why did the friends share books? To explore worlds together. 📚<br>
+262. How do friends inspire dreams? By believing in each other. 🌈<br>
+263. Why did the friends exchange notes? To brighten dull days. 💌<br>
+264. How do friends stay silly? By telling funny stories. 😜<br>
+265. Why did the friends play hide-and-seek? To giggle secretly. 🤫<br>
+266. How do friends create traditions? By repeating special moments. 🔔<br>
+267. Why did the friends bake a cake? To taste happiness together. 🎂<br>
+268. How do friends celebrate birthdays? With smiles and care. 🎂💙<br>
+269. Why did the friends make a fort? To enjoy private fun. 🏰<br>
+270. How do friends support creativity? By cheering ideas on. 🎨<br>
+271. Why did the friends write jokes? To laugh endlessly. 😂<br>
+272. How do friends celebrate small victories? With hugs and cheers. 🤗<br>
+273. Why did the friends plant flowers? To bloom together. 🌺<br>
+274. How do friends comfort sadness? By presence and care. ❤️<br>
+275. Why did the friends send letters? To surprise and delight. 💌<br>
+276. How do friends share emotions? By smiles, hugs, and notes. 💌🤗<br>
+277. Why did the friends create a scrapbook? To save memories. 📔<br>
+278. How do friends celebrate weekends? With laughter and joy. 🌞<br>
+279. Why did the friends bake cookies? To share sweetness. 🍪<br>
+280. How do friends support challenges? By cheering silently. 🌟<br>
+281. Why did the friends watch movies together? To enjoy emotions. 🎬<br>
+282. How do friends stay motivated? By cheering each other. 📣<br>
+283. Why did the friends take photos? To capture moments forever. 📸<br>
+284. How do friends share secrets? With winks and smiles. 😉<br>
+285. Why did the friends celebrate small joys? With giggles and cheers. 😄<br>
+286. How do friends inspire each other? By example and kindness. 🌟<br>
+287. Why did the friends play sports? To grow stronger together. ⚽<br>
+288. How do friends comfort nights? With loving messages. 🌙<br>
+289. Why did the friends roast marshmallows? To feel warmth and joy. 🔥<br>
+290. How do friends show patience? By staying kind in silence. 🕊️<br>
+291. Why did the friends make a playlist? To hear happiness in songs. 🎶<br>
+292. How do friends share emotions? Through small acts of care. 💌<br>
+293. Why did the friends watch stars? To dream side by side. 🌌<br>
+294. How do friends comfort tears? By hugs and kind words. 🤗<br>
+295. Why did the friends make crafts? To build memories together. ✂️<br>
+296. How do friends celebrate achievements? With joy and laughter. 🥳<br>
+297. Why did the friends learn a dance? To move in sync with fun. 💃🕺<br>
+298. How do friends honor mistakes? With forgiveness and care. 🌟<br>
+299. Why did the friends share books? To explore worlds together. 📚<br>
+300. How do friends inspire dreams? By believing in each other. 🌈<br>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Reuse the heart burst function from your main script
+  function burstHearts(box){
+      const rect = box.getBoundingClientRect();
+      for(let i=0;i<30;i++){  // more hearts this time
+          const heart = document.createElement("div");
+          heart.className = "heart";
+          heart.innerText = "💙";
+          heart.style.left = rect.left + rect.width/2 + "px";
+          heart.style.top = rect.top + rect.height/2 + "px";
+          heart.style.setProperty("--x",(Math.random()*400-200)+"px");
+          heart.style.setProperty("--y",(Math.random()*400-200)+"px");
+          heart.style.fontSize = (12+Math.random()*16)+'px';
+          document.body.appendChild(heart);
+          setTimeout(()=>heart.remove(),2000);
+      }
+  }
+</script>
+
+<!-- PROMISES SECTION -->
+<div id="promises" class="section-screen">
+<button class="close-btn" onclick="closeSection('promises')">Close</button>
+
+<h1 style="text-align:center;color:#4da6ff;margin-bottom:20px;">
+Promises 💙
+</h1>
+
+<div class="promise-container">
+    <div class="promise-box">
+        Promise of Trust – No matter what happens, we will always trust each other. Even when we don’t talk for days, our hearts will stay connected. 💌<br><br>
+
+        Promise of Patience – We will wait for each other, through misunderstandings, busy days, or silent moments. Our bond is stronger than any distance or time apart. ⏳<br><br>
+
+        Promise of Support – In every challenge, every exam, every sad moment, we will be there for each other. Even if I can’t be online, I am silently cheering for you. 🌟<br><br>
+
+        Promise of Care – We will always care for each other’s happiness. Your smiles, dreams, and well-being are treasures I will protect forever. 🕊️<br><br>
+
+        Promise of Honesty – We will always speak openly, share our thoughts, and never let misunderstandings grow between us. Words may be hard, but honesty will guide us. 🗝️<br><br>
+
+        Promise of Laughter – Even in tough times, we will find moments to laugh, play, and enjoy life together. Fun and joy are part of our bond. 😂<br><br>
+
+        Promise of Memories – Every memory we create—good or sad—will be cherished. They are the building blocks of our friendship, unique and irreplaceable. 🌈<br><br>
+
+        Promise of Loyalty – No matter what anyone says or what happens around us, our loyalty to each other will never fade. You are my best friend, forever. 💎<br><br>
+
+        Promise of Understanding – We will try to understand each other, even in silence or distance. Sometimes words aren’t needed when hearts speak. 💖<br><br>
+
+        Promise of Forever – From today, tomorrow, and for every year to come, our friendship will stand strong. Our bond is rare, infinite, and unbreakable—Emonica forever. 🌌<br><br>
+
+        “No matter where life takes us, I promise to keep you close in my heart, to support you silently, to care for you endlessly, and to cherish our friendship every single day.”
+    </div>
+</div>
+
+</div>
+
+<!-- PROMISE STYLES -->  
+<style>  
+.promise-container{  
+    max-width:800px;  
+    margin:auto;  
+    padding-bottom:60px;  
+}  
+  
+.promise-box{  
+    background: linear-gradient(135deg,#4da6ff,#1f6fd6);  
+    padding:30px;  
+    border-radius:20px;  
+    box-shadow:0 0 35px rgba(77,166,255,0.8);  
+    line-height:1.8;  
+    font-size:16px;  
+    color:white;  
+    animation: glow 3s infinite alternate;  
+}  
+  
+@keyframes glow{  
+    from{ box-shadow:0 0 20px #4da6ff; }  
+    to{ box-shadow:0 0 45px #4da6ff; }  
+}  
+</style>  
+  
+<!-- HEART ANIMATION -->  
+<script>  
+function startPromiseHearts(){  
+    setInterval(()=>{  
+        const heart=document.createElement("div");  
+        heart.innerHTML="💙";  
+        heart.style.position="fixed";  
+        heart.style.left=Math.random()*100+"vw";  
+        heart.style.bottom="-20px";  
+        heart.style.fontSize=(12+Math.random()*14)+"px";  
+        heart.style.opacity=0.8;  
+        heart.style.zIndex=5;  
+        heart.style.animation="floatUp 6s linear forwards";  
+        document.body.appendChild(heart);  
+        setTimeout(()=>heart.remove(),6000);  
+    },400);  
+}  
+
+// START HEARTS IMMEDIATELY ON PAGE LOAD
+startPromiseHearts();  
+</script>  
+  
+<style>  
+@keyframes floatUp{  
+    0%{transform:translateY(0);opacity:0.9;}  
+    100%{transform:translateY(-110vh);opacity:0;}  
+}  
+</style>
+
+<!-- BIRTHDAY SECTION -->
+<div id="birthday" class="section-screen">
+  <button class="close-btn" onclick="closeSection('birthday')">Close</button>
+
+  <h1 style="text-align:center;color:#4da6ff;">Here's a tiny Birthday hug from me 💙</h1>
+
+  <!-- COUNTDOWN PAGE -->
+  <div id="birthday-countdown-page" style="text-align:center; padding:30px;">
+      <h2>🎂 Countdown to Your Birthday 🎂 wait for the time to Enter🙃</h2>
+      <div id="countdown" style="font-size: 2em; margin:20px 0;"></div>
+      <div>
+          <button id="enter-btn" style="padding:10px 25px; font-size:16px; border-radius:6px; background:#4da6ff; color:white; border:none;" disabled>Enter</button>
+          <button id="preview-btn" style="padding:5px 12px; font-size:14px; border-radius:6px; background:#ff4da6; color:white; border:none; margin-left:10px;">X</button>
+      </div>
+  </div>
+
+  <!-- BIRTHDAY CONTENT PAGE (hidden initially) -->
+  <div id="birthday-content-page" style="display:none; padding:20px; overflow-y:auto; max-height:80vh;">
+      <h1 style="text-align:center;color:#4da6ff;">🎂 Your Birthday – January 1 💙</h1>
+
+<!-- Birthday Section Boxes (Same Style) -->
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🎂 Your Birthday – January 1 💙<br><br>
+✨ A Day That Begins the Year<br>
+January 1 is not just the start of a new year.<br>
+It’s the day the world became brighter—because you were born.<br>
+While everyone celebrates a new beginning, I celebrate you.<br>
+A new year begins with hope, and your birthday reminds me that hope has a name: Nica.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+💫 Why This Day Is Special<br>
+This day matters to me because you exist.<br>
+Because someone with a kind heart, soft care, and quiet strength came into this world.<br>
+Your birthday isn’t just about candles or wishes—it’s about appreciating the soul that makes life warmer for others.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🎈 A Birthday Wish From My Heart<br>
+On your birthday, I wish you:<br>
+Peace on days when life feels heavy 🌙<br>
+Strength when you feel tired or unsure 💪<br>
+Smiles that come naturally, not forced 😊<br>
+Success in studies and dreams you haven’t even spoken yet 📚<br>
+And happiness that stays, even in silence 💖<br>
+May every year make you stronger, wiser, and closer to everything you dream of.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+💙 What You Mean to Me<br>
+You are not just someone I remember once a year.<br>
+You are someone who lives in my thoughts daily.<br>
+Your words, your care, your presence—even from far away—mean more than you know.<br>
+This birthday, I want you to remember: You are valued.<br>
+You are important.<br>
+You are deeply cared for.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🌱 A New Year, A New Chapter (2026)<br>
+This birthday is special because it begins a new chapter for both of us.<br>
+A year of growth, responsibility, and change.<br>
+Even if life becomes busy, even if messages become fewer,<br>
+my care does not reduce.<br>
+Distance does not erase bonds built with sincerity.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🕊️ A Quiet Truth<br>
+From this birthday onward, I may not always be present online.<br>
+Studies, responsibilities, and Class 10 will demand my time.<br>
+But here’s the truth I want you to hold close:<br>
+Absence is not abandonment.<br>
+Even in silence, I am rooting for you.<br>
+Even without messages, I am thinking of you.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🎁 This Page Is My Gift<br>
+This website, these words, this effort—<br>
+they are my way of saying:<br>
+“You matter to me enough that I wanted to create something that stays.”<br>
+Something you can open anytime.<br>
+Something that reminds you you’re never alone.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+🌌 For the Future You<br>
+No matter where life takes us—<br>
+different paths, busy days, long gaps—<br>
+I hope every January 1 reminds you that someone out there<br>
+is silently proud of you.<br>
+Keep growing.<br>
+Keep dreaming.<br>
+Keep being you.
+</div>
+
+<div class="birthday-box" onclick="burstHearts(this)">
+💙 One Last Birthday Line<br>
+Happy Birthday, Nica.<br>
+May your life be as gentle as your heart<br>
+and as strong as your spirit.<br>
+This page will always wait for you—<br>
+just like our friendship.
+</div>
+
+      <!-- Big letter box -->
+      <div id="birthday-letter-box" class="birthday-box long-message" onclick="openLetter()">Tap to open the letter box 💌</div>
+  </div>
+</div>
+
+<script>
+// PHILIPPINES TIME COUNTDOWN
+const countdownElement = document.getElementById('countdown');
+const enterBtn = document.getElementById('enter-btn');
+const previewBtn = document.getElementById('preview-btn');
+const birthdayContent = document.getElementById('birthday-content-page');
+
+function updateCountdown() {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    const philippineTime = new Date(utc + (8*3600000));
+
+    const target = new Date('2026-01-01T00:00:00+08:00');
+    const diff = target - philippineTime;
+
+    if(diff > 0){
+        const days = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const seconds = Math.floor((diff % (1000*60)) / 1000);
+        countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    } else {
+        countdownElement.innerHTML = philippineTime.toLocaleTimeString('en-PH');
+        enterBtn.disabled = false;
+    }
+}
+setInterval(updateCountdown,1000);
+
+// ENTER BUTTON CLICK
+enterBtn.addEventListener('click',()=>{
+    birthdayContent.style.display = 'block';
+    document.getElementById('birthday-countdown-page').style.display = 'none';
+});
+
+// PREVIEW BUTTON
+previewBtn.addEventListener('click',()=>{
+    const key = prompt("Enter preview pass key:");
+    if(key === "@1234"){
+        birthdayContent.style.display = 'block';
+        document.getElementById('birthday-countdown-page').style.display = 'none';
+    } else {
+        alert("Wrong key!");
+    }
+});
+
+// LETTER BOX
+function openLetter(){
+    const box = document.getElementById('birthday-letter-box');
+    box.innerHTML = "To My Dearest Nica, 💙<br><brHappy birthday, my dear friend. Today is not just a day to celebrate your birth, but also a moment to celebrate you, your life, and the beautiful soul that you are. I’ve been thinking about what I want to tell you for a long time, and I want these words to carry all my feelings—love, care, memories, and promises—all the things that sometimes I cannot say in person but feel deeply in my heart.<br><br>It’s hard to believe that from June 14, 2023, the day I first messaged you on Messenger, our journey began. That day changed my life completely, and little did I know that it would bring me someone as amazing as you. Two years have passed since then, and every moment, every laugh, every memory with you has become a treasure that I hold close. From the first “Hi” we exchanged to every conversation we’ve had, you have been a light in my life—even in moments when life felt heavy.<br><br>I remember long ago when you told me that you liked me as a friend. At that time, my heart was full, but I respected what you said because I wanted our friendship to grow strong and safe. Later, when I told you “I love you” on November 7, 2023, my feelings were deep, honest, and vulnerable. I know things were complicated, and you loved someone else, but even through that, I never stopped caring for you. My heart stayed with you, quietly, patiently, hoping that we would understand each other better with time. 💫<br><br>There were times when our friendship faced challenges. I remember the moments when I could not talk to you for long periods, when you might have felt I was ignoring you. It was never my intention. Sometimes, my mother asked me to stay away from the phone for exams or family matters, and I couldn’t explain it to you immediately. I understand now that it may have hurt you or made you feel distant from me. I was sad too, Nica. Those days when I waited to see your messages, or when I saw you online but couldn’t talk, were difficult for me. I often worried that I had lost you or that the warmth between us might fade. But even in silence, my heart never left you. 💔<br><br>I remember how it felt when I saw your old messages, when I realized how much you had cared for me, even when things were hard. It made me cry, not because of anger or pain, but because I realized how precious our bond is. Every smile, every joke, every “good morning” and “good night” we shared built this strong connection that I treasure more than anything in this world. You taught me patience, understanding, and the true meaning of friendship. And even when I was hurt, I never stopped loving you—not romantically in a way to force you, but with a deep, pure care that wishes for your happiness above everything. 🌹<br><br>Our friendship has grown through so many moments—both happy and sad. I will never forget the time when you blocked me or when I thought I might have lost you forever. That was one of the worst days of my life. I couldn’t think properly, couldn’t focus on my studies, and my mood changed completely. But then, when you unblocked me and we started talking again, my heart felt light, and I realized that our bond is stronger than any misunderstanding. Those moments of sadness, confusion, and fear taught me the value of trust, patience, and forgiveness in our friendship. They showed me that even when things go wrong, our connection can survive if we care for each other sincerely.<br><br>I want to remind you, Nica, that even when life feels heavy, even when we are apart, and even when I cannot talk to you for days, my thoughts are always with you. I will never intentionally ignore you. If I cannot message you, it is never because I do not care; it is because life, responsibilities, or studies demand my attention. Even if the world misunderstands us, I hope you never doubt my heart. My care, my thoughts, and my love are always around you—even in silence. 💌<br><br>You’ve brought so much light into my life. You’ve taught me how to appreciate small moments, how to laugh even when things are hard, and how to be patient with the people we care about. You’ve been my inspiration, my comfort, and my joy. I know that sometimes life can be tiring, and I want to remind you that it’s okay to feel tired or sad. Those moments do not make you weak—they make you human, and they remind me how strong and brave you truly are. 🌟<br><br>I want to tell you something important, Nica. From January 1, 2026, I may not be able to use my phone as much because I will be busy with my studies in Class 10. It makes me sad to think that I cannot talk to you durwish this time, but I want you to know that my absence does not mean my care is gone. Even if I can’t reply or chat, I am always thinking of you, praying for you, and wishing for your happiness. This year, more than ever, I hope you take care of yourself, stay strong, and remember that I am silently supporting you from afar. 🕊️<br><br>Nica, you are not just my friend—you are my best friend, my confidant, and a beautiful soul I am endlessly grateful for. I love how you care, how you laugh, how you share your feelings, and even how you have the courage to face life’s challenges. You are one of the strongest people I know, and I hope that whenever life feels unfair or difficult, you remember that strength lives inside you. You have survived hard days before, and you will continue to rise again and again. I believe in you completely. 💖<br><br>We have shared secrets, laughter, games, and moments that only we understand. I want to honor all of that in this letter, because those moments are the foundation of what makes us “Emonica”—a bond so unique that no one can break it. We promised each other long ago that we will trust, wait, and stay loyal to each other no matter what. Even when life keeps us apart or when misunderstandings happen, I want you to remember that my heart will always stay with you. The bond we have is rare, Nica. It is strong, loving, and infinite. 🌌<br><brAs I continue writing to you, I must remember the moments when life felt heavy for both of us. I know there were times when you were tired, overwhelmed, or even hurt by situations, and I wish more than anything that I could have been there physically to hold your hand, to reassure you, to let you know that everything will be okay. I remember the days when I saw your messages slowed down, when your words carried a little sadness, or when life seemed unfair to you. I felt those moments deep in my heart. It hurt me to know that sometimes you felt alone, even when I was silently praying for your happiness.<br><br>I remember the first time I truly felt the weight of losing you, or the fear of it. That day in November, when you blocked me, I couldn’t think or focus. I cried, Nica. I couldn’t sleep properly. I couldn’t study. I felt empty, as if a part of my heart was missing. That pain reminded me how important you are to me, not just as a friend, but as someone who makes life brighter and fuller. Those moments, though sad, taught me the true meaning of caring for someone deeply. 🌙<br><br>There were also moments when I misunderstood you, or you might have misunderstood me. I know I may have seemed distant or absent at times, and I never wanted that to make you feel unloved or unimportant. I know your heart might have felt heavy with thoughts like, “Has Emon forgotten me?” or “Does he still care?” And the truth is, Nica, even when I couldn’t send a message, even when I had to step away for my studies or family duties, I was always thinking of you. Your happiness and peace were always in my heart, quietly, silently, like a candle that never goes out. 🕯️<br><br>Do you remember the playful moments we shared? The little games we played, the guessing games where I tried to amaze you? Like the time I guessed your bird “Eagle” correctly—you were so amazed, and your laughter made my heart soar. Those moments remind me that friendship is not just about words; it’s about understanding each other, sharing joy, and making memories that light up our days. Even when things were difficult, those small, playful moments were sparks of happiness that connected us. 🌟<br><br>And yet, there were moments when I hurt. When I saw your messages from the past, I realized how much pain I might have caused by misunderstandings or absence. I cried many times, Nica, not in anger but in longing—for us to truly understand each other, for our bond to be unshakable. There were nights when I thought, “What if I lost her forever?” But each time, something inside me whispered, “She will come back. She will understand. She trusts you.” And I held onto that hope, because I believed in us, in the strength of our friendship. 💞<br><br>I also remember how we shared secrets, simple things that only we understood. Your birthday being January 1, my birthday being June 1—our months start with ‘J’—a little coincidence, but to me, it’s magical. Those small details, like our shared inside jokes, the way we could laugh at nothing, and the promises we made to each other, are treasures I will always hold. They remind me that our friendship is rare, unique, and full of meaning. ✨<br><br>There were sad moments too—like when your grandfather passed away. I know it’s been hard for you, Nica, and my heart aches knowing you are in pain. I wish I could be there to comfort you, to ease your sorrow, to let you feel the warmth of care that I always carry for you. Life can be unfair sometimes, and I hate that you had to feel that sadness. But I hope you know this: even when I am far away, I am silently supporting you, praying for you, wishing for your smile. Your strength, even in grief, inspires me endlessly. 🌹<br><br>Nica, we have faced so many ups and downs together. We have shared joy, laughter, tears, and misunderstandings. And yet, through everything, our trust has remained. We promised each other that no matter how long we don’t talk, no matter how difficult life gets, we will wait for each other and trust each other. That promise is sacred to me, Nica. Even if I cannot be online after your birthday because of Class 10 studies, I will always be with you in thought and spirit. That promise, and our trust, is a bridge that keeps us close even when life pulls us apart. 🌉<br><br>I also remember your kind and caring heart—the way you think of others, the way you comfort me, even in small gestures, the way you are patient, gentle, and understanding. Those qualities make you extraordinary, Nica. You care deeply, and it shows in everything you do. You have inspired me to be better, to love sincerely, and to treasure people in my life. I want you to know that your caring nature never goes unnoticed. I see it, I feel it, and I am grateful for it every single day. 💖<br><br>Through the sad moments and the joyful moments, the playful games and serious talks, the misunderstandings and clarifications, one thing has never changed: my devotion to you as my friend, my admiration for you as a person, and my hope for our future together as “Emonica.” That bond we share, Nica, is unbreakable because it is built on trust, love, care, patience, and understanding. 🌌<br><br>And even when life demands I focus on my studies or responsibilities, I want you to remember: nothing can reduce the care I have for you. Not distance, not time, not misunderstandings. Every memory, every secret, every smile you’ve given me lives in my heart, and I carry it with me, always. That’s what friendship means to me—it’s more than words. It’s about presence, even in absence. It’s about loyalty, even when life is busy. It’s about trust, hope, and love, even when life is hard. As your special day approaches, I want to pause and celebrate you, the amazing person who has made my life brighter, richer, and filled with meaning. Your birthday, January 1, is not just the start of a new year—it’s a reminder of the wonderful light you bring to everyone around you, including me. This year, 2026, marks another milestone in your life, and I wish(wish) I could be there beside you to laugh, to cheer, and to celebrate the incredible person you are. 🥳🎂<br><b>I know life hasn’t always been easy, Nica. You’ve faced challenges, sadness, and times when your heart felt heavy. But even in the hardest moments, you’ve shown a strength that inspires me endlessly. You have a courage inside you that I hope you never forget—a warrior who faces life’s storms with quiet determination and a heart that cares deeply for others. Even when things feel overwhelming, remember that you are never alone, because I am always here, cheering for you, praying for you, believing in you. 🌹<br><br>This year, as you celebrate your birthday, I want to remind you of our promise—that we will never leave each other, no matter how long we may not talk. That even if life takes us through challenges, studies, or distance, our trust and friendship remain unshakable. Remember, Nica: our friendship is rare, Emonica is real, and it is built on trust, patience, understanding, and care. These promises we made are stronger than any obstacle life may place in our path. 💎<br><br>I want you to embrace this year with hope, courage, and positivity. Study hard, dream big, and always remember to take care of yourself. Eat properly, sleep well, and hydrate—because your body and mind are treasures that allow you to shine brightly in this world. Even as I become busy with Class 10 studies, know that my thoughts and prayers are always with you. I am cheering for your success, your happiness, and your growth every single day. 📚✨<br><br>Nica, I hope you can carry with you these words of encouragement:<br><br>> You are stronger than you think.<brEven when life feels heavy, remember the warrior inside you who never gives up.<brEvery challenge you face is a chance to grow, to shine, and to rise.<br>You don’t need to be perfect—just be yourself, brave, kind, and real.<br>The world may not always understand your worth, but I do, and I always will.<br>You are valuable, powerful, and capable of achieving every dream in your heart. 💖<br><br><br>Your kindness, your warmth, your laughter—they are gifts that make life brighter. Never doubt your value or underestimate the impact you have on those who care about you. The way you listen, care, and encourage others, even when you yourself are tired, shows the depth of your heart. You inspire me to be better, to love sincerely, and to cherish the people who matter most. 🌸<br><br>I also want to celebrate the playful, joyful moments we’ve shared—like our little guessing games, our inside jokes, and the laughter that could fill any distance between us. Those moments are proof that even in sadness or confusion, joy can be found when we are together in spirit. Your happiness, Nica, is one of my greatest treasures, and I will do my best to keep it alive with words, memories, and care, even when I cannot be physically present. 🌟<br><br>This birthday, I wish you:<br>Endless joy and laughter, even in quiet moments. 😄<br>Strength to face challenges without fear. 💪<br>Patience for yourself and others, even when life feels unfair. ⏳<br>Love from those around you, including my silent support and prayers. 💌<br>A heart full of hope, inspiration, and motivation to reach every dream you have. 🌈<br><br>Though I may not be able to message you starting January 1, 2026, due to my Class 10 studies, please never forget: I am always with you in spirit. My heart will always be near yours, cheering for you, silently supporting you, believing in you. You are never alone, Nica, because our bond is unbreakable. 🌌<br><br>Finally, I want to say this, my dearest Nica: thank you. Thank you for being you. Thank you for trusting me, loving me as a friend, and allowing me to be a part of your life. Thank you for the laughter, the care, the memories, and even the tears, because every single one of them has made our friendship stronger, deeper, and more meaningful. 🤍<br><br>Happy birthday, Nica. May this year be as beautiful, inspiring, and extraordinary as you are. Celebrate yourself, embrace your dreams, and never forget your worth. And remember, no matter where life takes us, I am always here—loyal, caring, and endlessly cheering for you. 💙<br><br>With all my heart,<br>Emon";
+    box.classList.add("expanded");
+    burstHearts(box);
+}
+
+// Use global burstHearts() function to ensure homepage hearts work
+</script>
+
+<style>
+.birthday-box {
+    background: linear-gradient(135deg,#4da6ff,#1f6fd6);
+    padding: 18px;
+    margin: 18px auto;
+    border-radius: 16px;
+    color: white;
+    max-width: 800px;
+    box-shadow: 0 0 20px #4da6ff;
+    cursor: pointer;
+}
+
+.long-message {
+    max-height: 90px;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+.long-message.expanded { max-height: 20000px; }
+
+.heart {
+    position: absolute;
+    font-size: 14px;
+    animation: burst 2s ease-out forwards;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+@keyframes burst {
+    0% { transform: translate(0,0) scale(1); opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) scale(0.4); opacity:0; }
+}
+</style>
+
+  </div>
+</div>
+
+<script>
+function unlock(){
+  if(pass.value==="Emonica"){
+    lock.style.display="none";
+    main.style.display="block";
+  } else error.style.display="block";
+}
+function openSection(id){
+  document.getElementById(id).classList.add("active");
+}
+function closeSection(id){
+  document.getElementById(id).classList.remove("active");
+}
+
+function toggleMessage(el){
+    el.classList.toggle("expanded");
+}
+function toggleMessageWithBurst(el){
+    el.classList.toggle("expanded");
+    burstHearts(el);
+}
+function burstHearts(box){
+    const rect = box.getBoundingClientRect();
+    for(let i=0;i<25;i++){
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "💙";
+        heart.style.left = rect.left + rect.width/2 + "px";
+        heart.style.top = rect.top + rect.height/2 + "px";
+        heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+        heart.style.setProperty("--y",(Math.random()*300-150)+"px");
+        heart.style.fontSize = (12+Math.random()*16)+'px';
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),2000);
+    }
+}
+
+// Birthday section letter box + floating hearts
+window.addEventListener('load', () => {
+  const letterBox = document.getElementById('letterBox');
+  letterBox.classList.add('open');
+  burstLetterHearts(letterBox);
+  createFloatingHearts(15);
+});
+
+function toggleLetter(box){
+  box.classList.toggle('open');
+  if(box.classList.contains('open')) burstLetterHearts(box);
+}
+
+function burstLetterHearts(box){
+  const rect = box.getBoundingClientRect();
+  for(let i=0;i<25;i++){
+    const heart = document.createElement("div");
+    heart.className = "letter-heart";
+    heart.innerText = "💙";
+    heart.style.left = rect.left + rect.width/2 + "px";
+    heart.style.top = rect.top + rect.height/2 + "px";
+    heart.style.setProperty("--x",(Math.random()*300-150)+"px");
+    heart.style.setProperty("--y",(Math.random()*300-150)+"px");
+    heart.style.fontSize = (12+Math.random()*16)+'px';
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1500);
+  }
+}
+
+function createFloatingHearts(num){
+  for(let i=0;i<num;i++){
+    const heart = document.createElement("div");
+    heart.className = "floating-heart";
+    heart.innerText = "💙";
+    heart.style.left = Math.random()*window.innerWidth + "px";
+    heart.style.top = window.innerHeight + Math.random()*100 + "px";
+    heart.style.animationDuration = 5 + Math.random()*5 + "s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),10000);
+  }
+  setTimeout(()=>createFloatingHearts(5),2000);
+}
+</script>
+
+</body>
+</html>
