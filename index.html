@@ -278,11 +278,410 @@ body {
 
     <div id="sections">
         <div class="box" onclick="openSection('friendship')">Our Friendship</div>
-        <div class="box" onclick="openSection('birthday')">Your Birthday</div>
+        <div class="box" onclick="openSection('birthday')">Your Birthday🎀</div>
         <div class="box" onclick="openSection('jokes')">Jokes</div>
         <div class="box" onclick="openSection('promises')">Promises</div>
+        <div class="box" onclick="openSection('giftboxes')">Gift Boxes🎁</div>
+        <div class="box" onclick="openSection('random-messages')">Random Messages💠</div>
     </div>
 </div>
+<!-- RANDOM MESSAGES SECTION -->
+<div id="random-messages" class="section-screen">
+  <button class="close-btn" onclick="closeSection('random-messages')">Close</button>
+
+  <h1 style="text-align:center;color:#4da6ff;">Random Message 🎁</h1>
+  <p style="text-align:center; max-width:600px; margin:auto; color:#dceeff;">
+    Click the button and see what message the universe (and me!) sends you today. You never know what you’ll get—maybe a smile, maybe a hug in words, maybe a little surprise. 🌟
+  </p>
+
+  <div style="text-align:center; margin:20px;">
+    <button id="open-msg-btn" onclick="showRandomMessage()" style="padding:10px 20px; font-size:16px; border:none; border-radius:6px; background:#4da6ff; color:white; cursor:pointer;">Open Message 💌</button>
+    <span id="countdown-msg" style="margin-left:10px; color:#4da6ff; font-weight:bold;"></span>
+  </div>
+
+  <div id="random-message-box" class="rhyme-box" style="max-width:700px; margin:auto; min-height:100px; position:relative; overflow-y:auto;">
+    <p id="random-message" style="font-size:16px; line-height:1.6; color:white;">Your message will appear here...</p>
+  </div>
+</div>
+
+<!-- RANDOM MESSAGES SCRIPT -->
+<script>
+const messages = [
+"Nica, your smile can light up even my gloomiest day. 🌟",
+"Hey Nica, don’t forget to eat today—you’re my favorite human. 💙",
+"Nica, even when life feels heavy, remember I’m cheering for you silently. 💌",
+"Laugh a little, Nica—you make the world happier just by existing. 😄",
+"Nica, your courage amazes me every single day. 💪",
+"Even if I can’t message, Nica, my thoughts are always with you. 🌙",
+"Nica, remember our first guessing game? I’ll always win with ‘Eagle.’ 🦅",
+"You’re never alone, Nica. I’m with you in spirit. ✨",
+"Nica, tiny steps count. You’re growing stronger every day. 🌸",
+"Random thought: Nica, you’re my sunshine on cloudy days. ☀️",
+"Nica, even tired hearts can shine. Keep going! 💖",
+"Hey Nica, I believe in your superpower called ‘you.’ 💪",
+"Nica, you’re allowed to rest today, tomorrow, and every day. 🛌",
+"Even silence can be loud, Nica—my care is always with you. 💌",
+"Nica, your laughter is contagious. Don’t ever hide it. 😆",
+"Whenever you feel lonely, Nica, remember someone loves you endlessly. 💙",
+"Nica, you make even ordinary moments feel special. ✨",
+"Take a deep breath, Nica. Everything will be okay. 🌿",
+"Nica, your patience is a gift. Never forget it. 🎁",
+"Even if I’m busy, Nica, you’re always on my mind. 💭",
+"Nica, your kindness is rare, beautiful, and inspiring. 🌹",
+"Keep smiling, Nica. It suits you perfectly. 😄",
+"Nica, even small victories are big wins. Celebrate them! 🎉",
+"Life can be messy, Nica, but you handle it like a star. 🌟",
+"Nica, remember I’m silently cheering for you, always. 💖",
+"You make friendship magical, Nica. ✨",
+"Nica, I admire your courage more than you know. 💪",
+"Sometimes a hug in words is enough, Nica. Here’s one: 🤗",
+"Nica, even your quiet moments are meaningful. 💙",
+"You are stronger than your struggles, Nica. Never forget that. 💎",
+"Nica, don’t rush life. Every step matters. 🐾",
+"Even a rainy day feels brighter with you, Nica. 🌧️💖",
+"Nica, let’s promise to laugh at silly things forever. 😆",
+"You’re my favorite human to care about, Nica. 💙",
+"Nica, I hope your day is full of tiny joys. 🌸",
+"Even if life feels unfair, Nica, your heart stays golden. ✨",
+"Nica, keep shining—distance can’t dim your light. 💖",
+"Random fun fact: Nica, you’re unbeatable at friendship games. 🦅",
+"Nica, never underestimate the power of your smile. 😄",
+"Even quiet moments with you, Nica, feel like magic. ✨",
+"Nica, your thoughts matter. Speak them, always. 💌",
+"Even lonely days pass, Nica—you’re never truly alone. 🌙",
+"Nica, I’m proud of how far you’ve come. Keep going! 💪",
+"Random laugh: Nica, why did the pencil break? It couldn’t handle my friendship jokes. 😆",
+"Nica, you make ordinary days extraordinary. 💖",
+"Even in silence, Nica, I’m sending hugs. 🤗",
+"Nica, your heart is bigger than mountains. 🏔️",
+"Every smile you share, Nica, echoes happiness. 😄",
+"Nica, trust yourself—you’re stronger than you think. 🌟",
+"Random thought: Nica, if friendship was a star, we’d light up the universe. 🌌",
+"Nica, even tired hearts can dance. Keep dancing. 💃",
+"You’re my favorite reason to smile, Nica. 😄",
+"Nica, every little care you show is noticed and loved. 💙",
+"Even the quietest words can heal, Nica. 🌿",
+"Nica, life’s storms can’t break your heart—it’s unshakable. 💎",
+"Random joke: Nica, why did the student eat his homework? Because he wanted a taste of success! 😆",
+"Nica, your friendship is a treasure I’ll always keep. 💖",
+"Even when tired, Nica, your spirit shines bright. ✨",
+"Nica, trust me—your strength is inspiring. 💪",
+"Random reminder: Nica, drink water today. Stay hydrated for happiness! 💧",
+"Nica, I hope your dreams today feel closer than yesterday. 🌈",
+"Even long distances can’t shrink my care for you, Nica. 💌",
+"Nica, you make every joke funnier just by being you. 😆",
+"Random thought: Nica, if I were a star, I’d shine just to see your smile. ✨",
+"Nica, keep growing, keep laughing, keep shining. 💖",
+"Even small steps count, Nica. Don’t give up. 🐾",
+"Nica, your heart carries more warmth than the sun. ☀️",
+"Random joke: Nica, why don’t eggs tell secrets? They might crack up! 😆",
+"Nica, you make my world colorful in ways words can’t describe. 🌸",
+"Even on cloudy days, Nica, your friendship is a rainbow. 🌈",
+"Nica, your laughter is my favorite sound. 😄",
+"Even tired minds can create magic, Nica. ✨",
+"Nica, small gestures of kindness make big memories. 💌",
+"Random thought: Nica, we’re unstoppable as Emonica. 💙",
+"Nica, your patience is a superpower. 💪",
+"Even silence can speak volumes, Nica—I hear you. 🌙",
+"Nica, life may test you, but you always rise. 🌟",
+"Random joke: Nica, why did the computer go to school? To improve its bytes! 😆",
+"Nica, you’re my constant in a changing world. 💖",
+"Even small laughs are treasures, Nica. Keep them close. 😄",
+"Nica, I hope today you feel the happiness you deserve. 🌸",
+"Even distance can’t hide how much I care, Nica. 💌",
+"Nica, your courage makes me braver too. 💪",
+"Random thought: Nica, friendship with you is a never-ending adventure. 🌌",
+"Nica, your heart is full of light—shine bright. ✨",
+"Even quiet days with you, Nica, are unforgettable. 💖",
+"Nica, small joys can make big memories. Capture them! 📸",
+"Random joke: Nica, why did the book join the party? It wanted to be well-read! 😆",
+"Nica, your care is a safe place for me. 🕊️",
+"Even when I’m busy, Nica, you’re always on my mind. 💭",
+"Nica, life may be tricky, but you handle it beautifully. 🌹",
+"Random thought: Nica, we’re the duo everyone secretly envies. 😎",
+"Nica, even tired hearts deserve joy. Keep smiling. 😄",
+"You’re my favorite human to cheer for, Nica. 💙",
+"Even rainy days feel brighter with your thoughts, Nica. 🌧️",
+"Nica, remember to trust yourself—you’re amazing. 💪",
+"Random joke: Nica, why was the math book sad? Too many problems! 😆",
+"Nica, every day with you in my thoughts is a gift. 🎁",
+"Even small messages can mean a lot, Nica—like this one. 💌",
+"Nica, keep your heart brave and your smile unstoppable. ✨💖",
+"Nica, even stars envy your glow. ✨",
+"Sometimes the smallest laugh, Nica, makes the biggest difference. 😄",
+"Nica, your heart is a safe harbor in any storm. 🌊💙",
+"Even on lazy days, Nica, you inspire me. 🌿",
+"Nica, I hope your dreams feel closer every morning. 🌅",
+"A thought for today: Nica, you are unstoppable. 💪",
+"Nica, your courage is louder than any fear. 🔥",
+"Even when quiet, Nica, your presence is felt. 💌",
+"Nica, laughter shared is a memory engraved forever. 😆",
+"Random reminder: Nica, drink water, eat well, shine bright! 💧☀️",
+"Nica, you’re a rainbow after every storm. 🌈",
+"Even small victories, Nica, are steps toward greatness. 🏆",
+"Nica, your kindness multiplies wherever it goes. 💖",
+"Sometimes life is tricky, Nica, but you handle it like a pro. 🎯",
+"Nica, your friendship is my favorite adventure. 🌌",
+"Even on tough days, Nica, your heart stays golden. 💛",
+"Nica, every smile you share makes my world brighter. ☀️",
+"Random thought: Nica, you’re a masterpiece of patience and love. 🎨",
+"Nica, even small acts of care can change the world. 🌸",
+"Keep going, Nica—the journey is yours to conquer. 🚀",
+"Nica, your laughter is like music in a quiet world. 🎶",
+"Even when tired, Nica, your heart never stops shining. ✨",
+"Nica, you make ordinary days extraordinary. 💖",
+"Random joke: Nica, why don’t scientists trust atoms? Because they make up everything! 😆",
+"Nica, patience is your hidden superpower. 💪",
+"Even distance can’t reduce the love in our friendship, Nica. 💙",
+"Nica, your courage inspires even my quietest moments. 🌿",
+"Random thought: Nica, if hugs were stars, you’d light the sky. 🌟🤗",
+"Nica, you’re the calm in my chaos. 🌊",
+"Nica, you’re the calm in my chaos and the joy in my day. 💖",
+"Even when the world feels heavy, Nica, your smile lifts it all. 🌤️",
+"Nica, every memory with you is a treasure I keep close. 🗝️",
+"Random laugh: Nica, why did the scarecrow win an award? Because he was outstanding in his field! 🌾😆",
+"Nica, you turn ordinary moments into magical memories. ✨",
+"Even silence feels loud with your care, Nica. 💌",
+"Nica, your kindness spreads like sunlight. ☀️",
+"Random thought: Nica, if we were emojis, we’d be endless hearts and laughter. 💙😂",
+"Nica, you make the ordinary extraordinary. 🌸",
+"Even lonely moments, Nica, feel warm thinking of you. 🔥",
+"Nica, your patience is my biggest inspiration. 🌿",
+"Random joke: Nica, why did the computer go to the doctor? It caught a virus! 💻😆",
+"Nica, even distant, your support feels close. 💌",
+"Every laugh with you, Nica, is a little miracle. ✨",
+"Nica, your courage lights paths for others. 💡",
+"Random idea: Nica, if friendship were a treasure chest, ours would overflow. 🏴‍☠️💎",
+"Nica, even tired days shine with your thoughts. 🌅",
+"Your heart is gold, Nica, and it makes the world richer. 💛",
+"Random thought: Nica, we could write a book of laughter and care. 📖",
+"Nica, your smile is my favorite wallpaper in life. 🖼️😄",
+"Even in storms, Nica, your strength anchors hearts. ⚓",
+"Nica, every joke we share feels like magic. ✨😂",
+"Random laugh: Nica, why did the skeleton go to the party alone? He had no body to go with! 💀😆",
+"Nica, your warmth can melt the coldest day. ❄️💖",
+"Even small gestures, Nica, create endless happiness. 🌸",
+"Nica, your laughter echoes in my memories forever. 🎶",
+"Random thought: Nica, life without your care is like night without stars. 🌌",
+"Nica, every word you say plants hope in my heart. 🌱",
+"Even long silences, Nica, speak volumes of love. 💌",
+"Nica, your courage is a melody I carry always. 🎵",
+"Random joke: Nica, why did the math book look sad? Because it had too many problems! 📚😆",
+"Nica, your friendship is my favorite home. 🏡💙",
+"Even ordinary talks, Nica, feel magical with you. ✨",
+"Nica, your smile can brighten the darkest sky. 🌌",
+"Random laugh: Nica, why did the chicken join a band? Because it had the drumsticks! 🐔🥁😆",
+"Nica, you’re the rainbow after every storm. 🌈",
+"Even quiet moments, Nica, feel full of life. 🌸",
+"Nica, your care is the bridge across loneliness. 🌉",
+"Random thought: Nica, if friendship were chocolate, ours would be endless. 🍫",
+"Nica, you make ordinary days sparkle. ✨",
+"Even small notes, Nica, are treasures in my heart. 💌",
+"Nica, your courage makes even mountains seem small. 🏔️",
+"Random joke: Nica, why did the cookie cry? Because its mom was a wafer too long! 🍪😆",
+"Nica, every memory with you is a star in my sky. ⭐",
+"Even in silence, Nica, your support speaks loudly. 💖",
+"Nica, laughter with you heals tired hearts. 🌸",
+"Random thought: Nica, we could win a world record for care and smiles. 🏆💙",
+"Nica, your heart is my favorite inspiration. 💛",
+"Even distance, Nica, cannot fade our bond. 🌌",
+"Nica, your joy is contagious to every corner of my mind. 😄",
+"Random joke: Nica, why did the pencil cross the road? To draw attention! ✏️😆",
+"Nica, your friendship is a lighthouse guiding me through storms. 🌊🌟",
+"Even small hugs, Nica, travel miles in thought. 🤗",
+"Nica, you make patience feel effortless. 🌿",
+"Random thought: Nica, if laughter were currency, we’d be millionaires. 💰😂",
+"Nica, your kindness turns gray skies blue. ☁️💙",
+"Even long nights, Nica, shine brighter with your thoughts. 🌙",
+"Nica, your words are magic spells of comfort. ✨💌",
+"Random laugh: Nica, why did the frog take the bus? His car got toad away! 🐸🚌😆",
+"Nica, every memory with you is my favorite story. 📖",
+"Even small smiles, Nica, ripple into happiness. 🌊",
+"Nica, your courage teaches me to rise every day. 💪",
+"Random thought: Nica, if friendship were a puzzle, we’d be the perfect fit. 🧩💙",
+"Nica, your laughter is my sunshine. 🌞",
+"Even tough days, Nica, feel lighter thinking of you. 💖",
+"Nica, every little act of care you give multiplies endlessly. 🌸",
+"Random joke: Nica, why did the computer take a nap? It needed to rest its bytes! 💻😆",
+"Nica, your presence in my thoughts makes everything better. 🌟",
+"Even when tired, Nica, your heart glows like fire. 🔥",
+"Nica, every playful moment with you is pure gold. ✨",
+"Random thought: Nica, if life were a dance, we’d have the best moves. 💃🕺",
+"Nica, your care is a gift I never stop unwrapping. 🎁",
+"Even distance, Nica, cannot erase the joy you bring. 💌",
+"Nica, your laughter is my secret treasure. 💖",
+"Random joke: Nica, why don’t oysters share their pearls? Because they’re shellfish! 🐚😆",
+"Nica, your heart is the compass guiding me home. 🧭",
+"Even ordinary days, Nica, feel special with you in thought. 🌸",
+"Nica, every care you give is a light in the dark. 💡",
+"Random thought: Nica, if smiles were stars, our sky would be infinite. 🌌",
+"Nica, your friendship is my favorite adventure. 🚀",
+"Even quiet moments, Nica, feel loud with love. 💌",
+"Nica, your courage inspires even my weakest days. 💪",
+"Random joke: Nica, why did the grape stop in the middle of the road? It ran out of juice! 🍇😆",
+"Nica, you make even ordinary meals feel like feasts. 🍲✨",
+"Even tired hearts, Nica, can shine with your care. 🌟",
+"Nica, every laugh shared is a bridge to happiness. 🌉",
+"Random thought: Nica, if friendship were coffee, we’d be the strongest brew. ☕💙",
+"Nica, your presence feels like home. 🏡💖",
+"Even when sad, Nica, your spirit inspires hope. 🌈",
+"Nica, your care is my secret power. 💎",
+"Random laugh: Nica, why did the skeleton go to the dance? Because he had no body to dance with! 💀💃😆",
+"Nica, your friendship fills empty corners of my heart. 💌",
+"Even ordinary jokes, Nica, become hilarious with you. 😂",
+"Nica, your warmth can thaw the coldest hearts. ❄️💖",
+"Random thought: Nica, we’d be a best-selling book of smiles and care. 📚✨",
+"Nica, your laughter heals hidden wounds. 🌸",
+"Even small reminders, Nica, carry endless love. 💌",
+"Nica, your patience is a superpower I admire. 💪",
+"Random joke: Nica, why did the cow go to space? To see the moooon! 🐄🌙😆",
+"Nica, every memory, laugh, and care shared with you is priceless. 💖"
+];
+
+let buttonCooldown = false;
+
+function showRandomMessage() {
+    if(buttonCooldown) return;
+
+    // Show random message
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    document.getElementById('random-message').innerHTML = msg;
+    burstHearts(document.getElementById('random-message-box'));
+
+    // Start 5 second cooldown
+    buttonCooldown = true;
+    let countdown = 5;
+    const btn = document.getElementById('open-msg-btn');
+    const countdownMsg = document.getElementById('countdown-msg');
+    btn.disabled = true;
+    countdownMsg.innerHTML = `Wait ${countdown}s`;
+
+    const interval = setInterval(() => {
+        countdown--;
+        if(countdown > 0){
+            countdownMsg.innerHTML = `Wait ${countdown}s`;
+        } else {
+            clearInterval(interval);
+            buttonCooldown = false;
+            btn.disabled = false;
+            countdownMsg.innerHTML = "";
+        }
+    }, 1000);
+}
+
+// Floating blue hearts inside box
+function startRandomHearts(){
+    setInterval(()=>{
+        const heart=document.createElement("div");
+        heart.innerHTML="💙";
+        heart.style.position="absolute";
+        heart.style.left=Math.random()*95+"%";
+        heart.style.bottom="-20px";
+        heart.style.fontSize=(12+Math.random()*16)+"px";
+        heart.style.opacity=0.8;
+        heart.style.zIndex=2;
+        heart.style.animation="floatUp 5s linear forwards";
+        document.getElementById('random-message-box').appendChild(heart);
+        setTimeout(()=>heart.remove(),5000);
+    },500);
+}
+
+// Activate hearts when section opens
+const randomObserver=new MutationObserver(()=>{
+  if(document.getElementById("random-messages").classList.contains("active")){
+      startRandomHearts();
+      randomObserver.disconnect();
+  }
+});
+randomObserver.observe(document.body,{attributes:true,subtree:true});
+</script>
+
+<style>
+@keyframes floatUp{
+    0%{transform:translateY(0);opacity:0.9;}
+    100%{transform:translateY(-110%);opacity:0;}
+}
+</style>
+<!-- GIFT BOXES SECTION -->
+<div id="giftboxes" class="section-screen">
+  <button class="close-btn" onclick="closeSection('giftboxes')">Close</button>
+
+  <h1 style="text-align:center;color:#4da6ff;">Gift Boxes 🎁💙</h1>
+  <div id="giftboxes-container" style="max-width:900px;margin:auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;padding-top:20px;">
+    
+    <!-- Gift Box Example -->
+    <div class="gift-box" onclick="openGiftModal(1)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Open When You Smile</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(2)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Open When You Miss Me</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(3)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Our First Day</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(4)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Promise Box</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(5)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Motivation for You</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(6)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Future Us</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(7)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Study Support</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(8)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Birthday Surprise</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(9)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Laugh Break</div>
+    </div>
+
+    <div class="gift-box" onclick="openGiftModal(10)">
+      <div style="font-size:50px;text-align:center;">🎁</div>
+      <div style="text-align:center;margin-top:10px;font-weight:bold;">Silent Care</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="gift-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:30;justify-content:center;align-items:center;">
+  <div style="background:linear-gradient(135deg,#4da6ff,#1f6fd6);color:white;padding:30px;border-radius:20px;max-width:600px;position:relative;text-align:center;">
+    <button onclick="closeGiftModal()" style="position:absolute;top:10px;right:15px;background:#ff4da6;color:white;border:none;padding:5px 12px;border-radius:6px;font-size:16px;cursor:pointer;">X</button>
+    <div id="gift-modal-content" style="line-height:1.8;font-size:16px;"></div>
+  </div>
+</div>
+
+<!-- STYLES -->
+<style>
+.gift-box{
+  background:white;color:black;padding:20px;border-radius:15px;cursor:pointer;
+  width:160px;transition:0.3s;box-shadow:0 0 15px #4da6ff;text-align:center;
+}
+.gift-box:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 30px #4da6ff;
+}
+</style>
 
 <!-- FRIENDSHIP -->
 <div id="friendship" class="section-screen">
@@ -311,14 +710,14 @@ Two souls, one bond—forever one. 💙
   <div class="timeline-item">
     <h3>June 14, 2023</h3>
     <div class="long-message" onclick="toggleMessageWithBurst(this)">
-      First message to you on Messenger – a day that changed everything. 💌
+      First message to Nica on Messenger – a day that changed everything. 💌
     </div>
   </div>
 
   <div class="timeline-item">
     <h3>July 2023</h3>
     <div class="long-message" onclick="toggleMessageWithBurst(this)">
-      Nica, you told me that you liked me as your friend..!. 🌸
+      Nica, you told Emon that you liked me as your friend..!. 🌸
     </div>
   </div>
 
@@ -1021,6 +1420,7 @@ function openLetter(){
     burstHearts(box);
 }
 
+
 // Use global burstHearts() function to ensure homepage hearts work
 </script>
 
@@ -1140,6 +1540,59 @@ function createFloatingHearts(num){
   setTimeout(()=>createFloatingHearts(5),2000);
 }
 </script>
+<!-- GIFT BOXES SCRIPT -->
+<script>
+const giftMessages = {
+  1:"If you’re smiling right now, know that I’m smiling too. 😊 💙",
+  2:"Even if we’re quiet, I’m still here—thinking of you. 💙",
+  3:"June 14, 2023 — the day a simple ‘Hi’ became something special. 💙",
+  4:"No matter how long we don’t talk, we never leave. 🤝 💙",
+  5:"You’re stronger than your bad days. Don’t forget that. 🌱 💙",
+  6:"Someday we’ll look back and smile at how far we came. ✨ 💙",
+  7:"Eat first. Study later. Your brain deserves fuel. 📚😄 💙",
+  8:"January 1 isn’t just a new year—it’s you. 🎂 💙",
+  9:"Friendship is when roasting feels like love. 😂 💙",
+  10:"Even in silence, I care. 🕊️ 💙"
+};
+
+function openGiftModal(id){
+  document.getElementById("gift-modal").style.display="flex";
+  document.getElementById("gift-modal-content").innerHTML = giftMessages[id];
+  startGiftHearts();
+}
+
+function closeGiftModal(){
+  document.getElementById("gift-modal").style.display="none";
+  if(window.giftHeartInterval) clearInterval(window.giftHeartInterval);
+}
+
+function startGiftHearts(){
+  // Clear previous interval if any
+  if(window.giftHeartInterval) clearInterval(window.giftHeartInterval);
+
+  window.giftHeartInterval = setInterval(()=>{
+    const heart = document.createElement("div");
+    heart.innerHTML = "💙";
+    heart.style.position = "fixed";
+    heart.style.left = (50 + Math.random() * 100 - 50) + "vw";
+    heart.style.top = (50 + Math.random() * 50 - 25) + "vh";
+    heart.style.fontSize = (12 + Math.random() * 16) + "px";
+    heart.style.opacity = 0.8;
+    heart.style.zIndex = 35;
+    heart.style.pointerEvents = "none";
+    heart.style.animation = "floatGift 4s linear forwards";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 4000);
+  }, 300);
+}
+</script>
+
+<style>
+@keyframes floatGift{
+  0% { transform: translateY(0); opacity: 0.9; }
+  100% { transform: translateY(-100px); opacity: 0; }
+}
+</style>
 
 </body>
 </html>
